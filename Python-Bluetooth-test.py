@@ -12,13 +12,12 @@ class CommsService(Service):
       # Base 16 service UUID, This should be a primary service.
       super().__init__("3347AB00-FB94-11E2-A8E4-F23C91AEC05E", True)
 
-   @characteristic("3347AB01-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.READ)
+   @characteristic("3347AB01-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.READ, )
    def TxCharacteristic(self, options):
       # Characteristics need to return bytes.
       return bytes(TxData, "utf-8")
    
-   def send_data(data):
-      TxData = data
+   
 
    @characteristic("3347AB02-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.WRITE)
    def RxCharacteristic(self, options):
@@ -50,7 +49,7 @@ async def main():
    await advert.register(bus, adapter)
 
    while True:
-      CommsService.send_data("hello world")
+      TxData = "hello world"
       # Handle dbus requests.
       await asyncio.sleep(5)
 
