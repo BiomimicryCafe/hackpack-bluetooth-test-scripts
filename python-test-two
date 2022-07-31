@@ -134,11 +134,11 @@ class Advertisement(dbus.service.Object):
                          out_signature='')
     def Release(self):
         print('%s: Released!' % self.path)
-class TestAdvertisement(Advertisement):
+class HackpackAdvertisement(Advertisement):
 
     def __init__(self, bus, index):
         Advertisement.__init__(self, bus, index, 'peripheral')
-        self.add_service_uuid('6E400001-B5A3-F393-­E0A9-­E50E24DCCA9E')
+        self.add_service_uuid('D33F400C-FCEA-9C8D-81BE-EE3A87B5D716')
         self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03])
         self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
         self.add_local_name('Hackpack')
@@ -456,11 +456,11 @@ def main():
 
     app = Application(bus)
 
-    test_advertisement = TestAdvertisement(bus, 0)
+    hackpack_advertisement = HackpackAdvertisement(bus, 0)
 
     mainloop = GObject.MainLoop()
 
-    ad_manager.RegisterAdvertisement(test_advertisement.get_path(), {},
+    ad_manager.RegisterAdvertisement(hackpack_advertisement.get_path(), {},
                                      reply_handler=register_ad_cb,
                                      error_handler=register_ad_error_cb)
 
