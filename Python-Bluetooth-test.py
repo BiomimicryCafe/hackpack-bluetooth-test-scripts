@@ -5,6 +5,8 @@ from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
 
+TxData = None
+
 class CommsService(Service):
    def __init__(self):
       # Base 16 service UUID, This should be a primary service.
@@ -15,6 +17,9 @@ class CommsService(Service):
       # Characteristics need to return bytes.
       return bytes(TxData, "utf-8")
    
+   def send_data(data):
+      TxData = data
+
    @characteristic("3347AB02-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.WRITE)
    def RxCharacteristic(self, options):
       # This function is called when the characteristic is read.
@@ -23,11 +28,6 @@ class CommsService(Service):
       # You can generally ignore the options argument 
       # (see Advanced Characteristics and Descriptors Documentation).
       pass
-
-   @TxCharacteristic.setter
-   def send_data(self, value, options):
-      # Your characteristics will need to handle bytes.
-      self._some_value = value
 
 
 
