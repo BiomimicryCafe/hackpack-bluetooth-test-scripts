@@ -50,7 +50,7 @@ class MyService(Service):
       # Descriptors also need to handle bytes.
       return bytes("This characteristic is completely pointless!", "utf-8")
 
-async def main():
+async def mainasync():
    while (True):
       # This needs running in an awaitable context.
       bus = await get_message_bus()
@@ -61,4 +61,4 @@ async def main():
       
 if __name__ == '__main__':
    advert = Advertisement("HACKPACK", my_service_ids, my_appearance, my_timeout)
-   asyncio.run(main())
+   asyncio.run(mainasync())
