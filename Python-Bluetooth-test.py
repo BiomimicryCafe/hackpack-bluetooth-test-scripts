@@ -5,20 +5,19 @@ from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
 
+TxData = "Hello World"
+
 class CommsService(Service):
    def __init__(self):
       # Base 16 service UUID, This should be a primary service.
-      super().__init__("180D", True)
+      super().__init__("3347AB00-FB94-11E2-A8E4-F23C91AEC05E", True)
 
-   @characteristic("2A37", CharFlags.READ)
+   @characteristic("3347AB01-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.READ)
    def TxCharacteristic(self, options):
       # Characteristics need to return bytes.
-      pass
-   def send_data(self, new_data):
-      # Note that notification is asynchronous (you must await something at some point after calling this).
-      self.TxCharacteristic.changed(bytes(new_data, "utf-8"))
+      return bytes(TxData, "utf-8")
 
-   @characteristic("2A38", CharFlags.WRITE)
+   @characteristic("3347AB02-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.WRITE)
    def RxCharacteristic(self, options):
       # This function is called when the characteristic is read.
       # Since this characteristic is notify only this function is a placeholder.
@@ -44,7 +43,7 @@ async def main():
    adapter = await Adapter.get_first(bus)
 
    # Start an advert that will last for 60 seconds.
-   advert = Advertisement("HackPack", ["180D"], 0x0340, 60)
+   advert = Advertisement("HackPack", ["3347AB00-FB94-11E2-A8E4-F23C91AEC05E"], 0x0340, 60)
    await advert.register(bus, adapter)
 
    while True:
