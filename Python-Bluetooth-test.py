@@ -5,8 +5,6 @@ from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
 
-TxData = "Hello World"
-
 class CommsService(Service):
    def __init__(self):
       # Base 16 service UUID, This should be a primary service.
@@ -15,9 +13,7 @@ class CommsService(Service):
    @characteristic("3347AB01-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.READ)
    def TxCharacteristic(self, options):
       # Characteristics need to return bytes.
-      return bytes(TxData, "utf-8")
-   def send_data(newData):
-      TxData = newData
+      return bytes("TxData", "utf-8")
    @characteristic("3347AB02-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.WRITE)
    def RxCharacteristic(self, options):
       # This function is called when the characteristic is read.
@@ -48,8 +44,6 @@ async def main():
    await advert.register(bus, adapter)
 
    while True:
-   # Update the heart rate.
-      service.send_data("hello")
       # Handle dbus requests.
       await asyncio.sleep(5)
 
