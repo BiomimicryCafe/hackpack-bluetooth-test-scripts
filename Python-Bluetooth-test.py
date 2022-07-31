@@ -52,6 +52,7 @@ class MyService(Service):
 
 async def mainasync():
    while (True):
+      print("async loop running")
       # This needs running in an awaitable context.
       bus = await get_message_bus()
 
@@ -60,5 +61,6 @@ async def mainasync():
       await service.register(bus)
       
 if __name__ == '__main__':
+   print("starting")
    advert = Advertisement("HACKPACK", my_service_ids, my_appearance, my_timeout)
    asyncio.run(mainasync())
