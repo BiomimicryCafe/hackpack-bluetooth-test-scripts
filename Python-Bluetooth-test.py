@@ -16,7 +16,8 @@ class CommsService(Service):
    def TxCharacteristic(self, options):
       # Characteristics need to return bytes.
       return bytes(TxData, "utf-8")
-
+   def send_data(newData):
+      TxData = newData
    @characteristic("3347AB02-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.WRITE)
    def RxCharacteristic(self, options):
       # This function is called when the characteristic is read.
