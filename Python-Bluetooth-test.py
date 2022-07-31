@@ -51,10 +51,10 @@ if __name__ == '__main__':
     # services aren't being advertised).
     advert = Advertisment("HACKPACK", my_service_ids, my_appearance, my_timeout)
 
-    while (true):
-        # This needs running in an awaitable context.
-        bus = await get_message_bus()
+    while (True):
+      # This needs running in an awaitable context.
+      bus = await get_message_bus()
 
-        # Instance and register your service.
-        service = MyService()
-        await service.register(bus)
+      # Instance and register your service.
+      service = MyService()
+      await service.register(bus)
