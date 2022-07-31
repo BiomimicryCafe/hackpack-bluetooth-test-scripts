@@ -1,5 +1,5 @@
 
-import dbus
+import dbus-python
 
 import logging
 import sys
