@@ -44,7 +44,8 @@ class MyService(Service):
       return bytes("This characteristic is completely pointless!", "utf-8")
 
 async def main():
-   # This needs running in an awaitable context.
+   while (True):
+      # This needs running in an awaitable context.
       bus = await get_message_bus()
 
       # Instance and register your service.
