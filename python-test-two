@@ -141,7 +141,7 @@ class HackpackAdvertisement(Advertisement):
         self.add_service_uuid('D33F400C-FCEA-9C8D-81BE-EE3A87B5D716')
         self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03])
         self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
-        self.add_local_name('Hackpack')
+        self.add_local_name('hackpack')
         self.include_tx_power = True
         self.add_data(0x26, [0x01, 0x01, 0x00])
 def register_ad_cb():
