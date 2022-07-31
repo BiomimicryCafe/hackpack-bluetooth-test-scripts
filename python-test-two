@@ -15,6 +15,15 @@ import sys
 
 from random import randint
 
+class Comms:
+    RxValue = ""
+    TxValue = ""
+
+    def sendData():
+        pass
+    def readData():
+        pass
+
 mainloop = None
 
 BLUEZ_SERVICE_NAME = 'org.bluez'
@@ -382,7 +391,7 @@ class TxCharacteristic(Characteristic):
                 self.TX_CHRC_UUID,
                 ['read', 'notify'],
                 service)
-        self.value = RxCharacteristic.ReadValue
+        self.value = Comms.RxValue
     def ReadValue(self, options):
         print('TxCharacteristic Read: ' + repr(self.value))
         return self.value
@@ -404,6 +413,7 @@ class RxCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('RxCharacteristic Write: ' + repr(value))
         self.value = value
+        Comms.RxValue = value
 
 def register_app_cb():
     print('GATT application registered')
