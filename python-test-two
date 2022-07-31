@@ -138,11 +138,10 @@ class TestAdvertisement(Advertisement):
 
     def __init__(self, bus, index):
         Advertisement.__init__(self, bus, index, 'peripheral')
-        self.add_service_uuid('180D')
-        self.add_service_uuid('180F')
+        self.add_service_uuid('6E400001-B5A3-F393-­E0A9-­E50E24DCCA9E')
         self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03])
         self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
-        self.add_local_name('TestAdvertisement')
+        self.add_local_name('Hackpack')
         self.include_tx_power = True
         self.add_data(0x26, [0x01, 0x01, 0x00])
 def register_ad_cb():
@@ -163,7 +162,7 @@ class Application(dbus.service.Object):
         self.path = '/'
         self.services = []
         dbus.service.Object.__init__(self, bus, self.path)
-        self.add_service(TestService(bus, 0))
+        self.add_service(CommsService(bus, 0))
 
     def get_path(self):
         return dbus.ObjectPath(self.path)
