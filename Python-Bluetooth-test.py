@@ -5,7 +5,7 @@ from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
 
-TxData = None
+TxData = ""
 
 class CommsService(Service):
    def __init__(self):
@@ -26,7 +26,7 @@ class CommsService(Service):
       # You don't need this function Python 3.9+ (See PEP 614).
       # You can generally ignore the options argument 
       # (see Advanced Characteristics and Descriptors Documentation).
-      pass
+      TxData = self._get_property_value
 
 
 
