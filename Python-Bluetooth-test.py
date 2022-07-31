@@ -4,7 +4,7 @@ from bluez_peripheral.gatt.descriptor import descriptor, DescriptorFlags as Desc
 from bluez_peripheral.gatt.service import ServiceCollection
 from ble.util import *
 from bluez_peripheral.advert import Advertisment
-
+import asyncio
 # Define a service like so.
 class MyService(Service):
    def __init__(self):
@@ -43,6 +43,14 @@ class MyService(Service):
       # Descriptors also need to handle bytes.
       return bytes("This characteristic is completely pointless!", "utf-8")
 
+async def main():
+   # This needs running in an awaitable context.
+      bus = await get_message_bus()
+
+      # Instance and register your service.
+      service = MyService()
+      await service.register(bus)
+      
 if __name__ == '__main__':
     my_service_ids = ["BEEF"] # The services that we're advertising.
     my_appearance = 0 # The appearance of my service.
@@ -50,11 +58,4 @@ if __name__ == '__main__':
     my_timeout = 60 # Advert should last 60 seconds before ending (assuming other local
     # services aren't being advertised).
     advert = Advertisment("HACKPACK", my_service_ids, my_appearance, my_timeout)
-
-    while (True):
-      # This needs running in an awaitable context.
-      bus = await get_message_bus()
-
-      # Instance and register your service.
-      service = MyService()
-      await service.register(bus)
+    asyncio.run(main())
