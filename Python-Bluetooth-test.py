@@ -10,7 +10,7 @@ class CommsService(Service):
       # Base 16 service UUID, This should be a primary service.
       super().__init__("180D", True)
 
-   @Characteristic("2A37", CharFlags.READ)
+   @characteristic("2A37", CharFlags.READ)
    def TxCharacteristic(self, options):
       # Characteristics need to return bytes.
       pass
@@ -18,7 +18,7 @@ class CommsService(Service):
       # Note that notification is asynchronous (you must await something at some point after calling this).
       self.TxCharacteristic.changed(bytes(new_data, "utf-8"))
 
-   @Characteristic("2A38", CharFlags.WRITE)
+   @characteristic("2A38", CharFlags.WRITE)
    def RxCharacteristic(self, options):
       # This function is called when the characteristic is read.
       # Since this characteristic is notify only this function is a placeholder.
