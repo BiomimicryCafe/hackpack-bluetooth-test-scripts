@@ -4,6 +4,7 @@ from bluez_peripheral.gatt.descriptor import descriptor, DescriptorFlags as Desc
 from bluez_peripheral.gatt.service import ServiceCollection
 from bluez_peripheral.util import *
 from bluez_peripheral.advert import Advertisement
+from bluez_peripheral.agent import NoIoAgent
 import asyncio
 
 my_service_ids = ["BEEF"] # The services that we're advertising.
