@@ -4,13 +4,21 @@ from bluez_peripheral.util import *
 from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
-import struct
-class HeartRateService(Service):
+
+class CommsService(Service):
    def __init__(self):
       # Base 16 service UUID, This should be a primary service.
       super().__init__("180D", True)
 
-   @characteristic("2A37", CharFlags.NOTIFY)
+   @TxCharacteristic("2A37", CharFlags.READ)
+   def on_read(self, options):
+      # Characteristics need to return bytes.
+      pass
+   def send_data(self, new_data):
+      # Note that notification is asynchronous (you must await something at some point after calling this).
+      self.on_read.changed(bytes(new_data, "utf-8"))
+
+   @RxCharacteristic("2A38", CharFlags.WRITE)
    def on_data_recieved(self, options):
       # This function is called when the characteristic is read.
       # Since this characteristic is notify only this function is a placeholder.
@@ -19,20 +27,13 @@ class HeartRateService(Service):
       # (see Advanced Characteristics and Descriptors Documentation).
       pass
 
-   def send_data(self, new_data):
-      # Call this when you get a new heartrate reading.
-      # Note that notification is asynchronous (you must await something at some point after calling this).
-      flags = 0
 
-      # Bluetooth data is little endian.
-      data = struct.pack("<BB", flags, new_data)
-      self.on_data_recieved.changed(data)
 
 async def main():
    # Alternativly you can request this bus directly from dbus_next.
    bus = await get_message_bus()
 
-   service = HeartRateService()
+   service = CommsService()
    await service.register(bus)
 
    # An agent is required to handle pairing 
@@ -48,7 +49,7 @@ async def main():
 
    while True:
    # Update the heart rate.
-      service.send_data("hello world")
+      service.send_data("hello")
       # Handle dbus requests.
       await asyncio.sleep(5)
 
