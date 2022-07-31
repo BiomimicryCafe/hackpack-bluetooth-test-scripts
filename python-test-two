@@ -382,7 +382,7 @@ class TxCharacteristic(Characteristic):
                 self.TX_CHRC_UUID,
                 ['read', 'notify'],
                 service)
-        self.value = RxCharacteristic.value
+        self.value = RxCharacteristic.ReadValue
 
     def ReadValue(self, options):
         print('TxCharacteristic Read: ' + repr(self.value))
