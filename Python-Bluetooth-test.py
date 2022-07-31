@@ -5,6 +5,13 @@ from bluez_peripheral.gatt.service import ServiceCollection
 from bluez_peripheral.util import *
 from bluez_peripheral.advert import Advertisement
 import asyncio
+
+my_service_ids = ["BEEF"] # The services that we're advertising.
+my_appearance = 0 # The appearance of my service.
+# See https://specificationrefs.bluetooth.com/assigned-values/Appearance%20Values.pdf
+my_timeout = 60 # Advert should last 60 seconds before ending (assuming other local
+# services aren't being advertised).
+
 # Define a service like so.
 class MyService(Service):
    def __init__(self):
@@ -53,10 +60,5 @@ async def main():
       await service.register(bus)
       
 if __name__ == '__main__':
-    my_service_ids = ["BEEF"] # The services that we're advertising.
-    my_appearance = 0 # The appearance of my service.
-    # See https://specificationrefs.bluetooth.com/assigned-values/Appearance%20Values.pdf
-    my_timeout = 60 # Advert should last 60 seconds before ending (assuming other local
-    # services aren't being advertised).
-    advert = Advertisement("HACKPACK", my_service_ids, my_appearance, my_timeout)
-    asyncio.run(main())
+   advert = Advertisement("HACKPACK", my_service_ids, my_appearance, my_timeout)
+   asyncio.run(main())
