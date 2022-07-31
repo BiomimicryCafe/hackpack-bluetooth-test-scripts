@@ -4,7 +4,6 @@ from bluez_peripheral.util import *
 from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
-import struct
 
 class HeartRateService(Service):
    def __init__(self):
@@ -12,7 +11,7 @@ class HeartRateService(Service):
       super().__init__("180D", True)
 
    @characteristic("2A37", CharFlags.NOTIFY)
-   def heart_rate_measurement(self, options):
+   def on_data_recieved(self, options):
       # This function is called when the characteristic is read.
       # Since this characteristic is notify only this function is a placeholder.
       # You don't need this function Python 3.9+ (See PEP 614).
@@ -20,14 +19,10 @@ class HeartRateService(Service):
       # (see Advanced Characteristics and Descriptors Documentation).
       pass
 
-   def update_heart_rate(self, new_rate):
+   def send_data(self, new_data):
       # Call this when you get a new heartrate reading.
       # Note that notification is asynchronous (you must await something at some point after calling this).
-      flags = 0
-
-      # Bluetooth data is little endian.
-      rate = struct.pack("<BB", flags, new_rate)
-      self.heart_rate_measurement.changed(rate)
+      self.on_data_recieved.changed(new_data)
 
 async def main():
    # Alternativly you can request this bus directly from dbus_next.
@@ -44,12 +39,12 @@ async def main():
    adapter = await Adapter.get_first(bus)
 
    # Start an advert that will last for 60 seconds.
-   advert = Advertisement("Heart Monitor", ["180D"], 0x0340, 60)
+   advert = Advertisement("HackPack", ["180D"], 0x0340, 60)
    await advert.register(bus, adapter)
 
    while True:
    # Update the heart rate.
-      service.update_heart_rate(120)
+      service.send_data("hello")
       # Handle dbus requests.
       await asyncio.sleep(5)
 
