@@ -1,75 +1,59 @@
 from bluez_peripheral.gatt.service import Service
 from bluez_peripheral.gatt.characteristic import characteristic, CharacteristicFlags as CharFlags
-from bluez_peripheral.gatt.descriptor import descriptor, DescriptorFlags as DescFlags
-from bluez_peripheral.gatt.service import ServiceCollection
 from bluez_peripheral.util import *
 from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
+import struct
 
-my_service_ids = ["BEEF"] # The services that we're advertising.
-my_appearance = 0 # The appearance of my service.
-# See https://specificationrefs.bluetooth.com/assigned-values/Appearance%20Values.pdf
-my_timeout = 60 # Advert should last 60 seconds before ending (assuming other local
-# services aren't being advertised).
-
-# Define a service like so.
-class MyService(Service):
+class HeartRateService(Service):
    def __init__(self):
-      self._some_value = None
-      # Call the super constructor to set the UUID.
-      super().__init__("BEEF", True)
+      # Base 16 service UUID, This should be a primary service.
+      super().__init__("180D", True)
 
-   # Use the characteristic decorator to define your own characteristics.
-   # Set the allowed access methods using the characteristic flags.
-   @characteristic("BEF0", CharFlags.READ)
-   def my_readonly_characteristic(self, options):
-      # Characteristics need to return bytes.
-      return bytes("Hello World!", "utf-8")
-
-   # This is a write only characteristic.
-   @characteristic("BEF1", CharFlags.WRITE)
-   def my_writeonly_characteristic(self, options):
-      # This function is a placeholder.
-      # In Python 3.9+ you don't need this function (See PEP 614)
+   @characteristic("2A37", CharFlags.NOTIFY)
+   def heart_rate_measurement(self, options):
+      # This function is called when the characteristic is read.
+      # Since this characteristic is notify only this function is a placeholder.
+      # You don't need this function Python 3.9+ (See PEP 614).
+      # You can generally ignore the options argument 
+      # (see Advanced Characteristics and Descriptors Documentation).
       pass
 
-   # In Python 3.9+:
-   # @characteristic("BEF1", CharFlags.WRITE).setter
-   # Define a characteristic writing function like so.
-   @my_readonly_characteristic.setter
-   def my_writeonly_characteristic(self, value, options):
-      # Your characteristics will need to handle bytes.
-      self._some_value = value
+   def update_heart_rate(self, new_rate):
+      # Call this when you get a new heartrate reading.
+      # Note that notification is asynchronous (you must await something at some point after calling this).
+      flags = 0
 
-   # Associate a descriptor with your characteristic like so.
-   # Descriptors have largely the same flags available as characteristics.
-   @descriptor("BEF2", my_readonly_characteristic, DescFlags.READ)
-   # Alternatively you could write this:
-   # @my_writeonly_characteristic.descriptor("BEF2", DescFlags.READ)
-   def my_readonly_descriptors(self, options):
-      # Descriptors also need to handle bytes.
-      return bytes("This characteristic is completely pointless!", "utf-8")
+      # Bluetooth data is little endian.
+      rate = struct.pack("<BB", flags, new_rate)
+      self.heart_rate_measurement.changed(rate)
 
-async def mainasync():
-   while (True):
-      # This needs running in an awaitable context.
-      bus = await get_message_bus()
+async def main():
+   # Alternativly you can request this bus directly from dbus_next.
+   bus = await get_message_bus()
 
-      # Instance and register your service.
-      service = MyService()
-      await service.register(bus)
+   service = HeartRateService()
+   await service.register(bus)
 
-      agent = NoIoAgent()
-      # This script needs superuser for this to work.
-      await agent.register(bus)
+   # An agent is required to handle pairing 
+   agent = NoIoAgent()
+   # This script needs superuser for this to work.
+   await agent.register(bus)
 
-      adapter = await Adapter.get_first(bus)
+   adapter = await Adapter.get_first(bus)
 
-      advert = Advertisement("HACKPACK", my_service_ids, my_appearance, my_timeout)
+   # Start an advert that will last for 60 seconds.
+   advert = Advertisement("Heart Monitor", ["180D"], 0x0340, 60)
+   await advert.register(bus, adapter)
+
+   while True:
+   # Update the heart rate.
+      service.update_heart_rate(120)
+      # Handle dbus requests.
+      await asyncio.sleep(5)
 
       await bus.wait_for_disconnect()
-      
-if __name__ == '__main__':
-   
-   asyncio.run(mainasync())
+
+if __name__ == "__main__":
+    asyncio.run(main())
