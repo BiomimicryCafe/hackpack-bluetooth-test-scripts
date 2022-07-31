@@ -52,15 +52,23 @@ class MyService(Service):
 
 async def mainasync():
    while (True):
-      print("async loop running")
       # This needs running in an awaitable context.
       bus = await get_message_bus()
 
       # Instance and register your service.
       service = MyService()
       await service.register(bus)
+
+      agent = NoIoAgent()
+      # This script needs superuser for this to work.
+      await agent.register(bus)
+
+      adapter = await Adapter.get_first(bus)
+
+      advert = Advertisement("HACKPACK", my_service_ids, my_appearance, my_timeout)
+
+      await bus.wait_for_disconnect()
       
 if __name__ == '__main__':
-   print("starting")
-   advert = Advertisement("HACKPACK", my_service_ids, my_appearance, my_timeout)
+   
    asyncio.run(mainasync())
