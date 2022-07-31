@@ -363,7 +363,7 @@ class CommsService(Service):
     """
     Service that provides communication with the client for basic commands and file transfer
     """
-    COMMS_SVC_UUID = '6E400001-B5A3-F393-­E0A9-­E50E24DCCA9E'
+    COMMS_SVC_UUID = 'D33F400C-FCEA-9C8D-81BE-EE3A87B5D716'
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.COMMS_SVC_UUID, True)
@@ -383,7 +383,6 @@ class TxCharacteristic(Characteristic):
                 ['read', 'notify'],
                 service)
         self.value = RxCharacteristic.ReadValue
-        self.add_descriptor(TestDescriptor(bus, 0, self))
     def ReadValue(self, options):
         print('TxCharacteristic Read: ' + repr(self.value))
         return self.value
@@ -402,29 +401,9 @@ class RxCharacteristic(Characteristic):
                 ['write', 'writable-auxiliaries'],
                 service)
         self.value = []
-        self.add_descriptor(TestDescriptor(bus, 1, self))
     def WriteValue(self, value, options):
         print('RxCharacteristic Write: ' + repr(value))
         self.value = value
-
-class TestDescriptor(Descriptor):
-    """
-    Dummy test descriptor. Returns a static value.
-
-    """
-    TEST_DESC_UUID = '12345678-1234-5678-1234-56789abcdef2'
-
-    def __init__(self, bus, index, characteristic):
-        Descriptor.__init__(
-                self, bus, index,
-                self.TEST_DESC_UUID,
-                ['read', 'write'],
-                characteristic)
-
-    def ReadValue(self, options):
-        return [
-                dbus.Byte('T'), dbus.Byte('e'), dbus.Byte('s'), dbus.Byte('t')
-        ]
 
 def register_app_cb():
     print('GATT application registered')
