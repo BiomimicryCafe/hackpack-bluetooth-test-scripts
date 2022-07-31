@@ -26,8 +26,12 @@ class CommsService(Service):
       # You don't need this function Python 3.9+ (See PEP 614).
       # You can generally ignore the options argument 
       # (see Advanced Characteristics and Descriptors Documentation).
-      TxData = self._get_property_value
+      pass
 
+   @TxCharacteristic.setter
+   def RxCharacteristic(self, value, options):
+      # Your characteristics will need to handle bytes.
+      self._some_value = value
 
 
 async def main():
