@@ -393,6 +393,7 @@ class TxCharacteristic(Characteristic):
                 service)
         self.value = Comms.RxValue
     def ReadValue(self, options):
+        self.value = Comms.RxValue
         print('TxCharacteristic Read: ' + repr(self.value))
         return self.value
 
