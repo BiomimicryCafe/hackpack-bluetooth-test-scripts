@@ -20,19 +20,13 @@ class CommsService(Service):
    
 
    @characteristic("3347AB02-FB94-11E2-A8E4-F23C91AEC05E", CharFlags.WRITE)
-   def RxCharacteristic(self, options):
+   def RxCharacteristic(self, value, options):
       # This function is called when the characteristic is read.
       # Since this characteristic is notify only this function is a placeholder.
       # You don't need this function Python 3.9+ (See PEP 614).
       # You can generally ignore the options argument 
       # (see Advanced Characteristics and Descriptors Documentation).
       pass
-
-   @TxCharacteristic.setter
-   def RxCharacteristic(self, value, options):
-      # Your characteristics will need to handle bytes.
-      self._some_value = value
-
 
 async def main():
    # Alternativly you can request this bus directly from dbus_next.
