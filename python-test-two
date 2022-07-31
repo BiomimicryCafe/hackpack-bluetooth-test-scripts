@@ -138,7 +138,7 @@ class HackpackAdvertisement(Advertisement):
 
     def __init__(self, bus, index):
         Advertisement.__init__(self, bus, index, 'peripheral')
-        self.add_service_uuid('D33F400C-FCEA-9C8D-81BE-EE3A87B5D716')
+        self.add_service_uuid('180D')
         self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03])
         self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
         self.add_local_name('hackpack')
@@ -363,7 +363,7 @@ class CommsService(Service):
     """
     Service that provides communication with the client for basic commands and file transfer
     """
-    COMMS_SVC_UUID = 'D33F400C-FCEA-9C8D-81BE-EE3A87B5D716'
+    COMMS_SVC_UUID = '180D'
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.COMMS_SVC_UUID, True)
