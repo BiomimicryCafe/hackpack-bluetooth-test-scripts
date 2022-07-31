@@ -2,7 +2,7 @@ from bluez_peripheral.gatt.service import Service
 from bluez_peripheral.gatt.characteristic import characteristic, CharacteristicFlags as CharFlags
 from bluez_peripheral.gatt.descriptor import descriptor, DescriptorFlags as DescFlags
 from bluez_peripheral.gatt.service import ServiceCollection
-from ble.util import *
+from bluez_peripheral.util import *
 from bluez_peripheral.advert import Advertisment
 import asyncio
 # Define a service like so.
