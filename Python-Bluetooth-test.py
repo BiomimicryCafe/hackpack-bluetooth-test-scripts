@@ -4,7 +4,7 @@ from bluez_peripheral.util import *
 from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
-
+import struct
 class HeartRateService(Service):
    def __init__(self):
       # Base 16 service UUID, This should be a primary service.
@@ -22,7 +22,11 @@ class HeartRateService(Service):
    def send_data(self, new_data):
       # Call this when you get a new heartrate reading.
       # Note that notification is asynchronous (you must await something at some point after calling this).
-      self.on_data_recieved.changed(new_data)
+      flags = 0
+
+      # Bluetooth data is little endian.
+      data = struct.pack("<BB", flags, new_data)
+      self.on_data_recieved.changed(data)
 
 async def main():
    # Alternativly you can request this bus directly from dbus_next.
@@ -44,7 +48,7 @@ async def main():
 
    while True:
    # Update the heart rate.
-      service.send_data("hello")
+      service.send_data("hello world")
       # Handle dbus requests.
       await asyncio.sleep(5)
 
